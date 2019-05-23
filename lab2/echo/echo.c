@@ -11,19 +11,19 @@
 #include <asm/uaccess.h>
 #include <linux/uaccess.h>
 
-#define BS 20
+#define BUFFERSIZE 20
 
-MODULE_LICENSE("Dual BSD/GPL");
-
-/*struct my_device{
+struct my_device{
 	struct cdev *chard;
 	int count;
-};*/
+	dev_t dev;
+	int major;
+	int minor;
+};
 
-int major= 0;
-dev_t devno;
-struct cdev *chard;
-struct my_device *mydev;
+struct my_device device;
+
+int res = 0;
 int bc=0;
 char buf[BS];
 
@@ -81,40 +81,34 @@ static struct file_operations fops = {
 
 static int echo_init(void)
 {
-	int res=0;
+	printk(KERN_ALERT "Hello echo\n");
+	res = alloc_chrdev_region(&device.dev, 0, 1, "echo");
 
-	printk(KERN_ALERT "Echo, world\n");
-	devno = MKDEV(major, 0);
-	 
-
-	if (major)
-		res = register_chrdev_region(devno, 1, "echo");
-	else {
-		res = alloc_chrdev_region(&devno, 0, 1, "echo");
-		major = MAJOR(devno);
-	}
-	if (res < 0)
+	if (res < 0){
 		return res;
+	}
 
-	chard = cdev_alloc();
-	chard->ops = &fops;
-	chard->owner=THIS_MODULE;
+	device.major = MAJOR(device.dev);
+	device.minor = MINOR(device.dev);
 
-	if(cdev_add(chard, devno, 1) <0){
+	device.chard = cdev_alloc();
+	device.chard->ops = &fops;
+	device.chard->owner=THIS_MODULE;
+
+	if(cdev_add(chard, device.dev, 1) <0){
 		printk(KERN_ERR "Error in cdev-add\n");
 		return res;
 	}
 
-
-	printk(KERN_NOTICE "Echo major ---> %d\n", major);
+	printk(KERN_NOTICE "Echo major ---> %d\n", device.major);
 	return res;
 }
 
 static void echo_exit(void)
 {
-	printk(KERN_ALERT "Goodbye, cruel world\nFreeing major: %d\n", major);
-	unregister_chrdev_region( devno , 1);
-	cdev_del(chard);
+	printk(KERN_ALERT "Exiting Echo and freeing major: %d\n", device.major);
+	unregister_chrdev_region(device.dev, 1);
+	cdev_del(device.chard);
 }
 
 module_init(echo_init);
