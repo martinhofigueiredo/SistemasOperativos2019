@@ -20,7 +20,6 @@ modules_install:
 
 clean:
 	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
-
 .PHONY: modules modules_install clean
 
 else
