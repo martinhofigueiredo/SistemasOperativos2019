@@ -5,7 +5,6 @@
 # This conditional selects whether we are being included from the
 # kernel Makefile or not.
 
-
 ifeq ($(KERNELRELEASE),)
 
 	# Assume the source tree is where the running kernel was built
@@ -34,8 +33,7 @@ endif
 
 buildp:
 	sudo sh disableserial.sh
-	sudo sh unload.sh serp
-	make
-	sudo sh load.sh serp
+	#sh unload.sh serp
+	sh load.sh serp
 removep:
 	sudo sh unload.sh serp

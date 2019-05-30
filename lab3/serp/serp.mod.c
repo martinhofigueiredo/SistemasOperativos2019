@@ -33,13 +33,13 @@ __attribute__((section("__versions"))) = {
 	{ 0x12f237eb, "__kzalloc" },
 	{ 0x2323fd40, "nonseekable_open" },
 	{ 0x75b38522, "del_timer" },
+	{ 0x4292364c, "schedule" },
 	{ 0x1b7d4074, "printk" },
 	{ 0x37a0cba, "kfree" },
 	{ 0xef79ac56, "__release_region" },
 	{ 0xb407b205, "ioport_resource" },
 	{ 0x7485e15e, "unregister_chrdev_region" },
 	{ 0x4bd6e07e, "cdev_del" },
-	{ 0x4292364c, "schedule" },
 };
 
 static const char __module_depends[]

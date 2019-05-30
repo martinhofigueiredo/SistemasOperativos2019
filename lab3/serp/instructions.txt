@@ -1,0 +1,32 @@
+host -> guest 
+	guest:
+		make
+		make buildp
+		sh read_file.sh
+		----------------
+		^C
+		make removep
+	host:
+	-file
+		sh hwrite_file.sh
+		------------------
+		./usocat - /tmp/vbox_ser_port1
+
+	-manual
+		./usocat - /tmp/vbox_ser_port1
+
+guest -> host
+
+	guest:
+		make
+		make buildp
+		-file
+			sh write_file.sh
+			----------------
+		-manual
+			cat > /dev/serp
+			---------------
+			^C
+		make removep
+	host:
+		sh hread_file.sh
